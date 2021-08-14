@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:with="lang=${#locale.language}" th:lang="${lang}">
+
+<head/>
+<body>
+
+<nav/>
+
+<div class="container">
+    <div class="row">
+        <div class="col text-center">
+            <h1 class="mt-5">CRUD App</h1>
+            <p class="lead">User list</p>
+        </div>
+    </div>
+</div>
+
+<div class="container pl-0">
+    <div class="row pb-3 pt-3 mb-2 pl-0 ml-0">
+        <div class="col-12 pl-0"><a type="button" th:href="@{/admin/new}" class="btn btn-secondary">Create new user</a></div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row p-3 mb-2 bg-dark text-white font-weight-bold">
+        <div class="col">Full name</div>
+        <div class="col">E-mail</div>
+        <div class="col text-center">Enabled</div>
+        <div class="col text-center">Roles</div>
+        <div class="col text-center">Actions</div>
+    </div>
+
+    <div th:each="user,rowStat : ${users}" class="d-flex align-items-center row p-2 mb-2" th:classappend="${rowStat.count % 2 != 0 ? 'bg-light text-dark' : 'bg-secondary text-white'}">
+        <div class="col font-weight-bold" th:text="${user.getFullName()}"/>
+        <div class="col" th:text="${user.email}"/>
+        <div class="col text-center" th:text="${user.enabled}"/>
+        <div class="col text-center">
+            <th:block th:each="role : ${user.roles}">
+                &nbsp;<span th:text="${role.name}"/>
+            </th:block>
+        </div>
+        <div class="col text-center">
+            <a type="button" th:href="@{/admin/{id}/edit(id=${user.id})}" class="btn btn-secondary" th:classappend="${rowStat.count % 2 == 0 ? 'bg-light text-dark' : 'bg-secondary text-white'}">Edit</a>
+            <a type="button" th:href="@{/admin/{id}/delete(id=${user.id})}" class="btn btn-secondary" th:classappend="${rowStat.count % 2 == 0 ? 'bg-light text-dark' : 'bg-secondary text-white'}">Delete</a>
+            <a type="button" th:href="@{/logout}" class="btn btn-outline-light">Logout</a>
+        </div>
+    </div>
+</div>
+
+<div th:replace="layouts/main :: footer"></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="collapse navbar-collapse" id="navbarResponsive">
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
+        <li class="nav-item" sec:authorize="hasRole('ADMIN')"><a class="nav-link" th:href="@{/admin/new}">Create new user</a></li>
+        <li class="nav-item" sec:authorize="hasRole('ADMIN')"><a class="nav-link" th:href="@{/admin}">User list</a></li>
+        <li class="nav-item" sec:authorize="isAuthenticated()"><a class="nav-link" th:href="@{/user}">Show profile</a></li>
+        <li class="nav-item" sec:authorize="isAuthenticated()">
+            <a type="button" th:href="@{/logout}" class="btn btn-outline-light">Logout</a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>
