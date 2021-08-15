@@ -26,4 +26,5 @@ public class RoleRepositoryImpl implements RoleRepository {
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException(String.format("Role %s not found", authority)));
     }
+
 }

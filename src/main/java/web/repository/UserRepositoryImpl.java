@@ -54,4 +54,6 @@ public class UserRepositoryImpl implements UserRepository {
     public void delete(User entity) {
         entityManager.remove(entityManager.contains(entity) ? entity : entityManager.merge(entity));
     }
+
+
 }

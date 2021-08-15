@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.password.PasswordEncoder;
 import web.config.handler.AuthenticationFailureHandler;
 import web.config.handler.AuthenticationSuccessHandler;
-import web.config.handler.UrlLogoutSuccessHandler;
+import web.repository.RoleRepositoryImpl;
 import web.service.AppService;
 
 @EnableWebSecurity(debug = true)
@@ -22,23 +22,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // класс, в котором описана логика при неудачной авторизации
     private final AuthenticationFailureHandler authenticationFailureHandler;
 
-    // класс, в котором описана логика при удачной авторизации
-    private final UrlLogoutSuccessHandler urlLogoutSuccessHandler;
-
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public SecurityConfig(AppService appService,
                           AuthenticationSuccessHandler authenticationSuccessHandler,
                           AuthenticationFailureHandler authenticationFailureHandler,
-                          UrlLogoutSuccessHandler urlLogoutSuccessHandler,
                           PasswordEncoder passwordEncoder) {
         this.appService = appService;
         this.authenticationSuccessHandler = authenticationSuccessHandler;
         this.authenticationFailureHandler = authenticationFailureHandler;
-        this.urlLogoutSuccessHandler = urlLogoutSuccessHandler;
         this.passwordEncoder = passwordEncoder;
-    }
+       }
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -51,27 +46,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable() //выключаем кроссдоменную секьюрность
                 .authorizeRequests(authorize -> authorize
-                        .antMatchers("/", "/css/*", "/js/*").permitAll()
                         .antMatchers("/admin/**").hasRole("ADMIN")
                         .antMatchers("/user/**").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()
                 );
 
         http.formLogin()
-                .loginPage("/") // указываем страницу с формой логина
                 .permitAll()  // даем доступ к форме логина всем
                 .successHandler(authenticationSuccessHandler) //указываем логику обработки при удачном логине
                 .failureHandler(authenticationFailureHandler) //указываем логику обработки при неудачном логине
-                .usernameParameter("email") // Указываем параметры логина и пароля с формы логина
-                .passwordParameter("password");
+                .usernameParameter("email"); // Указываем параметры логина с формы логина
+
 
         http.logout()
                 .permitAll() // разрешаем делать логаут всем
                 .logoutUrl("/logout")
                 .clearAuthentication(true)
                 .invalidateHttpSession(true) // сделать невалидной текущую сессию
-                .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/?logout") // указываем URL при удачном логауте
-                .logoutSuccessHandler(urlLogoutSuccessHandler);
+                .and().formLogin(); // указываем URL при удачном логауте
     }
 }

@@ -1,15 +1,18 @@
 package web.config.mvc;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 import web.config.listener.AppContextListener;
+import web.repository.UserRepository;
 
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 public class ApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+
     // Метод, указывающий на класс конфигурации
     @Override
     protected Class<?>[] getRootConfigClasses() {

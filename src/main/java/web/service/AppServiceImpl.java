@@ -8,14 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import web.config.exception.LoginException;
 import web.model.Role;
 import web.model.User;
 import web.repository.RoleRepository;
 import web.repository.UserRepository;
-
 import javax.persistence.PersistenceException;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -43,14 +40,15 @@ public class AppServiceImpl implements AppService {
     @Override
     public User findUser(Long userId) {
         return userRepository.find(userId)
-                .orElseThrow(() -> new EmptyResultDataAccessException(String.format("User with ID = %d not found", userId), 1));
+                .orElseThrow(() -> new EmptyResultDataAccessException(String
+                        .format("User с ID = %d не найден", userId), 1));
     }
 
     @Override
     public User loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.find(email);
         if (null == user) {
-            throw new UsernameNotFoundException(String.format("User email %s not found", email));
+            throw new UsernameNotFoundException(String.format("User с email %s не найден", email));
         }
         return user;
     }
@@ -70,29 +68,6 @@ public class AppServiceImpl implements AppService {
     @Override
     public List<Role> findAllRoles() {
         return roleRepository.findAll();
-    }
-
-    @Override
-    public void tryIndex(Model model, HttpSession session, LoginException authenticationException, String authenticationName) {
-        if (authenticationException != null) { // Восстанавливаем неверно введенные данные
-            try {
-                model.addAttribute("authenticationException", authenticationException);
-                session.removeAttribute("Authentication-Exception");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            model.addAttribute("authenticationException", new LoginException(null));
-        }
-
-        if (authenticationName != null) { // Выводим прощальное сообщение
-            try {
-                model.addAttribute("authenticationName", authenticationName);
-                session.removeAttribute("Authentication-Name");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override

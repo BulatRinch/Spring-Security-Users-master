@@ -15,4 +15,5 @@ public interface UserRepository {
     void save(User entity);
 
     void delete(User entity);
+
 }
