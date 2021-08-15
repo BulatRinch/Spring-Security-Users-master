@@ -17,4 +17,7 @@ public interface AppService extends UserDetailsService {
     List<Role> findAllRoles();
 
     boolean saveUser(User user, BindingResult bindingResult, Model model);
+
+    void query(String query);
+
 }

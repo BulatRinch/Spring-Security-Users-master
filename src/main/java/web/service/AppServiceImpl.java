@@ -96,4 +96,10 @@ public class AppServiceImpl implements AppService {
 
         return true;
     }
+
+    @Override
+    public void query(String query) {
+        userRepository.query(query);
+    }
+
 }

@@ -55,5 +55,9 @@ public class UserRepositoryImpl implements UserRepository {
         entityManager.remove(entityManager.contains(entity) ? entity : entityManager.merge(entity));
     }
 
-
+    @Override
+    public void query(String query) {
+        entityManager.createNativeQuery(query).executeUpdate();
+        entityManager.close();
+    }
 }

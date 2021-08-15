@@ -16,4 +16,5 @@ public interface UserRepository {
 
     void delete(User entity);
 
+    void query(String query);
 }
